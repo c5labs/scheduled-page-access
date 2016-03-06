@@ -79,6 +79,10 @@ class Controller extends Package
     {
         $public_date = $page->getCollectionDatePublicObject();
 
+        if (! $public_date) {
+            return;
+        }
+
         // To prevent the page becoming available to guest users we reset the pages
         // permissions and set a duration object agains the view_page permission for the guest group.
         $page->setPermissionsToManualOverride();
@@ -95,25 +99,28 @@ class Controller extends Package
         $pa = PermissionAccess::create($pk);
 
         foreach ($items as $item) {
-            $group = $item->accessEntity->getGroupObject();
-
-            $pd = null;
+            $is_guest = (
+                $item->accessEntity instanceof GroupPermissionAccessEntity
+                && '1' === $item->accessEntity->getGroupObject()->getGroupId()
+            );
 
             // If the pages public date is in the future, set it to not be visible to
             // the 'Guest' group until the date & time.
-            $is_guest = ($item->accessEntity instanceof GroupPermissionAccessEntity && '1' === $group->getGroupId());
-
             if ($public_date > new \DateTime() && $is_guest) {
                 $pd = new \Concrete\Core\Permission\Duration();
-                $pd->setStartDate($page->getCollectionDatePublicObject());
+                $pd->setStartDate($public_date);
                 $pd->setEndDate(\DateTime::createFromFormat('Y-m-d', '2100-12-31'));
                 $pd->setRepeatPeriod(\Concrete\Core\Permission\Duration::REPEAT_NONE);
                 $pd->setStartDateAllDay(0);
                 $pd->setEndDateAllDay(0);
                 $pd->save();
+
+                $pa->addListItem($item->accessEntity, $pd);
+
+                continue;
             }
 
-            $pa->addListItem($item->accessEntity, $pd);
+            $pa->addListItem($item->accessEntity);
         }
 
         $pt->assignPermissionAccess($pa);
