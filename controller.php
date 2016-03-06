@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\ConcreteDelayedPublish;
+namespace Concrete\Package\ConcreteTimedRelease;
 
 use Package;
 use Page;
@@ -11,7 +11,7 @@ defined('C5_EXECUTE') or die('Access Denied.');
 
 class Controller extends Package
 {
-    protected $pkgHandle = 'concrete-delayed-publish';
+    protected $pkgHandle = 'concrete-timed-release';
 
     protected $appVersionRequired = '5.7.1';
 
@@ -19,7 +19,7 @@ class Controller extends Package
 
     public function getPackageName()
     {
-        return t("Delayed Publishing Package");
+        return t("Timed Release Package");
     }
 
     public function getPackageDescription()
