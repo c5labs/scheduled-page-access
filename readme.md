@@ -1,4 +1,4 @@
-#Delayed Publishing for Concrete5#
+#Timed Release Publishing for Concrete5#
 The packages adds the ability to delay visibility of pages to Guest users by setting the pages Public Date \ Date Added attribute to a future date. The package works by setting the Guest groups permissions with a duration object, the same way that advanced permissions work.
 
 **This package is for concrete 5.7.1+ and works with the simple permissions model only. All installations use the simple permissions model unless you have upgraded to advanced permissions.**
