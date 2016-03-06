@@ -5,7 +5,7 @@ The packages adds the ability to delay visibility of pages to Guest users by set
 
 ##Installation##
 
-1. Unzip and copy the 'concrete-delayed-publish' folder to your concrete5 installations 'packages' folder.
+1. Unzip and copy the 'concrete-delayed-publish' folder to your concrete5 installations 'packages' folder. **(Ensure that the folder name is correct)**
 2. Login, click on the Settings icon on the right of the top bar, click 'Extend concrete5'.
 3. Click on the 'Install' button next to 'Dealyed Pulishing Package'.
 4. Create a page and set its Date Added or Public Date to a date / time in the future.
