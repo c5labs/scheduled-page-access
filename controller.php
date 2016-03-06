@@ -101,7 +101,9 @@ class Controller extends Package
 
             // If the pages public date is in the future, set it to not be visible to
             // the 'Guest' group until the date & time.
-            if ($public_date > new \DateTime() && '1' === $group->getGroupId()) {
+            $is_guest = ($item->accessEntity instanceof GroupPermissionAccessEntity && '1' === $group->getGroupId());
+
+            if ($public_date > new \DateTime() && $is_guest) {
                 $pd = new \Concrete\Core\Permission\Duration();
                 $pd->setStartDate($page->getCollectionDatePublicObject());
                 $pd->setEndDate(\DateTime::createFromFormat('Y-m-d', '2100-12-31'));
@@ -111,7 +113,7 @@ class Controller extends Package
                 $pd->save();
             }
 
-            $pa->addListItem(GroupPermissionAccessEntity::getOrCreate($group), $pd);
+            $pa->addListItem($item->accessEntity, $pd);
         }
 
         $pt->assignPermissionAccess($pa);
