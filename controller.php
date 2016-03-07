@@ -1,6 +1,7 @@
 <?php
 namespace Concrete\Package\ConcreteTimedRelease;
 
+use Group;
 use Package;
 use Page;
 use PermissionKey;
@@ -98,11 +99,21 @@ class Controller extends Package
         // Create a new access object.
         $pa = PermissionAccess::create($pk);
 
+        $registered_users_granted = false;
+
         foreach ($items as $item) {
             $is_guest = (
                 $item->accessEntity instanceof GroupPermissionAccessEntity
                 && '1' === $item->accessEntity->getGroupObject()->getGroupId()
             );
+
+            // The registered users group must be granted view permissions as any non-root 
+            // users that try to publish pages won't have the correct permissions as by 
+            // default pages only have the view permission set for guests.
+            if ($item->accessEntity instanceof GroupPermissionAccessEntity
+                && '2' === $item->accessEntity->getGroupObject()->getGroupId()) {
+                $registered_users_granted = true;
+            }
 
             // If the pages public date is in the future, set it to not be visible to
             // the 'Guest' group until the date & time.
@@ -121,6 +132,11 @@ class Controller extends Package
             }
 
             $pa->addListItem($item->accessEntity);
+        }
+
+        if (! $registered_users_granted) {
+            // Grant the permissions for registered users to view the site.
+            $pa->addListItem(GroupPermissionAccessEntity::getOrCreate(Group::getById(2)));
         }
 
         $pt->assignPermissionAccess($pa);
