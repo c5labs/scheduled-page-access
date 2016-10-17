@@ -4,9 +4,9 @@
  *
  * PHP version 5.4
  *
- * @author   Oliver Green <oliver@c5dev.com>
+ * @author   Oliver Green <oliver@c5labs.com>
  * @license  http://www.gnu.org/copyleft/gpl.html GPL3
- * @link     https://c5dev.com/add-ons/scheduled-page-access
+ * @link     https://c5labs.com/add-ons/scheduled-page-access
  */
 namespace Concrete\Package\ScheduledPageAccess;
 
@@ -24,9 +24,9 @@ use Concrete\Core\Permission\Access\Entity\GroupEntity as GroupPermissionAccessE
 /**
  * Package Controller Class.
  *
- * @author   Oliver Green <oliver@c5dev.com>
+ * @author   Oliver Green <oliver@c5labs.com>
  * @license  http://www.gnu.org/copyleft/gpl.html GPL3
- * @link     https://c5dev.com/add-ons/scheduled-page-access
+ * @link     https://c5labs.com/add-ons/scheduled-page-access
  */
 class Controller extends Package
 {
@@ -100,23 +100,6 @@ class Controller extends Package
     }
 
     /**
-     * Get a helper instance.
-     *
-     * @param  mixed $pkg
-     * @return \C5dev\Package\Thanks\PackageInstallHelper
-     */
-    protected function getHelperInstance($pkg)
-    {
-        if (! class_exists('\C5dev\Package\Thanks\PackageInstallHelper')) {
-            // Require composer
-            $filesystem = new Filesystem();
-            $filesystem->getRequire(__DIR__.'/vendor/autoload.php');
-        }
-
-        return new \C5dev\Package\Thanks\PackageInstallHelper($pkg);
-    }
-
-    /**
      * Start-up Hook.
      *
      * @return void
@@ -133,10 +116,6 @@ class Controller extends Package
         Events::addListener('on_page_add', function ($event) {
             $this->setPagePermissions($event->getPageObject());
         });
-
-        // Check whether we have just installed the package
-        // and should redirect to intermediate 'thank you' page.
-        $this->getHelperInstance($this)->checkForPostInstall();
     }
 
     /**
@@ -155,9 +134,6 @@ class Controller extends Package
         }
 
         $pkg = parent::install();
-
-        // Install the 'thank you' page if needed.
-        $this->getHelperInstance($pkg)->addThanksPage();
 
         return $pkg;
     }
